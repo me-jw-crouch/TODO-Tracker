@@ -1,3 +1,9 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1702326796
+::res://::1702328693
 icon.svg::CompressedTexture2D::8580144648387628082::1702326787::1702326797::1::::<><>::
+README.md::TextFile::-1::1702326904::0::1::::<><>::
+todo.gd::GDScript::-1::1702328137::0::1::::<>EditorPlugin<>::
+todo.tscn::PackedScene::3068846317384688748::1702328137::0::1::::<><>::
+::res://addons/::0
+::res://addons/my_custom_node/::0
+custom_node.gd::GDScript::-1::1702329924::0::1::::<>EditorPlugin<>::

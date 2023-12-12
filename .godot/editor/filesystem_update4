@@ -1,0 +1,4 @@
+res://todo.tscn
+res://todo.gd
+res://addons/my_custom_node/todo.tscn
+res://addons/my_custom_node/custom_node.gd
