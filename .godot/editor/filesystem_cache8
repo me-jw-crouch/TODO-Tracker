@@ -1,9 +1,10 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1702328693
+::res://::1702366156
 icon.svg::CompressedTexture2D::8580144648387628082::1702326787::1702326797::1::::<><>::
-README.md::TextFile::-1::1702326904::0::1::::<><>::
-todo.gd::GDScript::-1::1702328137::0::1::::<>EditorPlugin<>::
-todo.tscn::PackedScene::3068846317384688748::1702328137::0::1::::<><>::
-::res://addons/::0
-::res://addons/my_custom_node/::0
-custom_node.gd::GDScript::-1::1702329924::0::1::::<>EditorPlugin<>::
+old_script.gd::GDScript::-1::1702351643::0::1::::<>RefCounted<>::
+test_file.gd::GDScript::-1::1702343735::0::1::::<>RefCounted<>::
+todo.gd::GDScript::-1::1702365999::0::1::::<>Node<>::
+todo.tscn::PackedScene::6743896156541152325::1702366004::0::1::::<><>::res://todo.gd
+::res://FolderA/::1702366144
+::res://FolderA/subFolderA/::1702366144
+::res://FolderB/::1702366134

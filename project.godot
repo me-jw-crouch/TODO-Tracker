@@ -11,9 +11,6 @@ config_version=5
 [application]
 
 config/name="TODO Tracker"
+run/main_scene="res://todo.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/my_custom_node/plugin.cfg")

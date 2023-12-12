@@ -2,3 +2,5 @@ res://todo.tscn
 res://todo.gd
 res://addons/my_custom_node/todo.tscn
 res://addons/my_custom_node/custom_node.gd
+res://addons/my_custom_node/testing_plugin_EditorScript.gd
+res://todo2.gd
