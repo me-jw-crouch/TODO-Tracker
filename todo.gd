@@ -1,94 +1,118 @@
 extends Node
+## The todo plugin examines all files under 'res://' and documents instances of
+## 'TODO' and lists their location, and gives the line in the tooltip on hover.
+##
+## WIP Features
+## Clicking on the file should open up the file at the line within preferred
+## editor. Need to implement proper searching and item creating flow so the code
+## structures the file tree properly.
+##
+## @experimental
 
+enum DIR_TYPE { FOLDER, FILE }
+
+var search_strings_array = ["TODO", "FIXME", "WORKAROUND", "WARNING"]
+var filetypes_to_search = [".gd", ".txt"]
+var folders_to_ignore = ["FolderA"]
 var searchButton : Button
-var resultsTree : Tree
-var root : TreeItem
-var falseRoot : TreeItem
-var fileList : Dictionary
-var directory_array : Array[String] = ["res://"]
+var results_tree : Tree
+var tree_root : TreeItem
 
-func _ready() -> void: # Fully Working
+# Connect when ready to children and assign button signal.
+# Run update tree on load, button allows for refreshing.
+func _ready() -> void:
 	searchButton = $VSplitContainer/RunBtn
-	resultsTree = $VSplitContainer/PanelContainer/ResultsTree
+	results_tree = $VSplitContainer/PanelContainer/ResultsTree
 	searchButton.connect("pressed", _on_searchButton_pressed)
 	update_tree()
 
 func _on_searchButton_pressed():
-	resultsTree.clear()
+	results_tree.clear()
 	update_tree()
 
-
 func update_tree():
-	# Reset anything that needs it
-	directory_array = ["res://"]
-	resultsTree.clear()
+	results_tree.clear()
 
-	# Search root directory, if any others are found, get_dir_contents(path)
-	# will add them to directory_array, and will
-	var dir_to_search = directory_array.pop_back()
-	while dir_to_search != null:
-		get_dir_contents(dir_to_search)
-		dir_to_search = directory_array.pop_back()
+	tree_root = results_tree.create_item()
+	tree_root.set_text(0, "Files")
 
-	# Create the root of the Tree Node
-	root = resultsTree.create_item()
-	root.set_text(0, "Files")
+	var root_dir_dictionary = {
+		&"path" : "res://",
+		&"type": DIR_TYPE.FOLDER,
+		&"contents": {}
+		}
 
-	# Creates a sorted array of file names, so the tree
-	# will have them added in alpha order.
-	var file_array = []
-	for file in fileList.keys():
-		file_array.append(file)
-		file_array.sort()
+	# Recursive function, starts at root.
+	root_dir_dictionary[&"contents"] = get_dir_contents(root_dir_dictionary)
 
-	for file in file_array:
-		_parse_file(fileList[file][&"location"], file)
-		create_tree_item(fileList[file], root, file)
+	# Process the recieved dictionary, recursively again.
+	process_directory_contents(root_dir_dictionary)
 
+func get_dir_contents(dir_dictionary):
+	var path = dir_dictionary[&"path"]
+	var this_directory_contents = {}
 
-# Takes a path, cycles through all items within (ignoring any hidden files/dirs)
-# Adds directory to the search list, and adds files to the fileList dictionary
-# for parsing later.
-func get_dir_contents(path):
-	var dir = DirAccess.open(path)
+	var dir := DirAccess.open(path)
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":
-			if dir.current_is_dir() and not file_name.begins_with("."):
-				directory_array.push_back(file_name) # Not caring about order.
-			if not file_name.begins_with(".") and file_name.ends_with(".gd"):
-				if not fileList.has(file_name):
-					fileList[file_name] = {
-						&"location" : dir.get_current_dir(),
-					}
+			if not file_name.begins_with("."): # Ignores hidden files
+				if dir.current_is_dir() and not folders_to_ignore.has(file_name):
+					var new_directory := {
+						&"path" : path + file_name + "/",
+						&"type": DIR_TYPE.FOLDER,
+						&"contents": {},
+						}
+					new_directory[&"contents"] = get_dir_contents(new_directory)
+					this_directory_contents[file_name] = new_directory
+				else:
+					for suffix in filetypes_to_search:
+						if file_name.ends_with(suffix):
+							this_directory_contents[file_name] = {
+								&"path": path,
+								&"type": DIR_TYPE.FILE
+							}
 			file_name = dir.get_next()
+		dir.list_dir_end()
 	else:
-		print("An error occurred when trying to access the path.")
-		print(dir)
+		print("An error occurred when trying to access the path: " + path)
 
+	return this_directory_contents
 
-func _parse_file(path, fileName):
-	var file = FileAccess.open(path+fileName, FileAccess.READ)
+func _parse_file(path, file_name, parent_tree_item):
+	var file = FileAccess.open(path+file_name, FileAccess.READ)
 	if file:
 		var line = file.get_line()
 		var line_number = 1
 		while not file.eof_reached():
-			if line.find("TODO") != -1:
-				fileList[fileName][line_number] = line
+			for query in search_strings_array:
+				if line.find(query) != -1:
+					create_file_tree_item(parent_tree_item, line_number, line, file_name, query)
 			line = file.get_line()
 			line_number += 1
 		file.close()
 
+func process_directory_contents(dir_dict, parent = null):
+	# Iterate through each item in the directory dictionary
+	for key in dir_dict[&"contents"]:
+		if dir_dict[&"contents"][key][&"type"] == DIR_TYPE.FILE:
+			_parse_file(dir_dict[&"path"], key, parent)
+		elif dir_dict[&"contents"][key][&"type"] == DIR_TYPE.FOLDER:
+			var new_branch_parent = create_dir_tree_item(parent, key)
+			process_directory_contents(dir_dict[&"contents"][key], new_branch_parent)
 
-func create_tree_item(lines_from_file_dict, file_branch, fileName):
-	var parent = resultsTree.create_item(file_branch)
-	parent.set_text(0, fileName)
-	parent.set_tooltip_text(0, lines_from_file_dict[&"location"])
-	var keys_array = lines_from_file_dict.keys()
+func create_file_tree_item(parent, line_num, line, file_name, query) -> TreeItem:
+	var child = results_tree.create_item(parent)
+	child.set_text(0, file_name + "  @ ln " + str(line_num) + ": " + query)
+	child.set_tooltip_text(0, line)
+	# TODO set child's on_selected to run EditorInterface.edit_script(file_name)
+	# May need to also pass the file path into this function.
+	return child
 
-	for key in keys_array:
-		if key is int:
-			var child = resultsTree.create_item(parent)
-			child.set_text(0, "Ln: " + str(key)  +" : lineValue" )
-			child.set_tooltip_text(0, lines_from_file_dict[key])
+func create_dir_tree_item(parent, folder_name) -> TreeItem:
+	var new_branch_parent = results_tree.create_item(parent)
+	new_branch_parent.set_text(0, folder_name)
+	new_branch_parent.set_tooltip_text(0, "test")
+	new_branch_parent.set_selectable(0, false)
+	return new_branch_parent
