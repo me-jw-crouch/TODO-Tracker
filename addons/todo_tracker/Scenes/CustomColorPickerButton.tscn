@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b4e6t2y0q1sac"]
+
+[ext_resource type="Script" path="res://addons/todo_tracker/Scripts/custom_color_picker.gd" id="1_t7r6x"]
+
+[node name="CustomColorPickerButton" type="ColorPickerButton"]
+script = ExtResource("1_t7r6x")

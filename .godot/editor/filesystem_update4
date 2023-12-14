@@ -4,3 +4,5 @@ res://addons/todo_tracker/Scenes/settings_grid.tscn
 res://addons/todo_tracker/Scripts/settings_grid.gd
 res://addons/todo_tracker/backup_tt.cfg
 res://addons/todo_tracker/tt.cfg
+res://addons/todo_tracker/Scripts/custom_color_picker.gd
+res://addons/todo_tracker/Scenes/CustomColorPickerButton.tscn

@@ -1,49 +1,61 @@
-# @tool
-# class_name
 extends Node
-## docstring
 
-# Signals
-
-# Enums
-
-# CONSTANTS
-
-# @export variables
-
-# public variables
 var settings_grid : GridContainer
+var dock : Control
+var query_list : Dictionary
+var query_grid : GridContainer
+var file_ext_grid : GridContainer
+var ignore_grid : GridContainer
+var customCPBtn
 
-# private variables
-
-# @onready variables
-
-# func _init() -> void:
-
-func _enter_tree() -> void:
-	var dock = get_parent()
-	var settings_grid = dock.get_node(
+func _ready() -> void:
+	dock = get_node("../../../..")
+	settings_grid = $"."
+	settings_grid = dock.get_node(
 			"PanelContainer/VSplitContainer/LowerContainer/SettingsGrid")
+	customCPBtn = preload("res://addons/todo_tracker/Scenes/CustomColorPickerButton.tscn")
 
-# func _ready() -> void:
+	query_grid = $QueryGrid
+	file_ext_grid = $FileExtGrid
+	ignore_grid = $IgnoreGrid
 
-# remaining built-in virtual methods
+	query_list = dock.query_list
+	print("Settings Grid Initialized")
+	update_grids()
+	# TODO: Build Arrays for QueryGrid, FileExtGrid, and IgnoreGrid
 
-# public methods
-func add_dict_rows_to_grid(dict):
-	for query in dict:
-		var color_picker = ColorPickerButton.new()
-		color_picker.color = dict[query]
-		settings_grid.add_child(color_picker)
 
+func _exit_tree() -> void:
+	clear_settings_grid()
+
+
+func update_grids():
+	add_dict_rows_to_grid()
+
+
+func clear_settings_grid():
+	var children = settings_grid.get_children(true)
+	for child in children:
+		if child.has_meta("persist"):
+			child.queue_free()
+
+
+func add_dict_rows_to_grid():
+	for query in query_list:
+		var color = query_list[query]
 		var line_edit = LineEdit.new()
 		line_edit.text = query
 		line_edit.add_theme_font_size_override("font_size", 10)
 		line_edit.expand_to_text_length = true
+
+		var color_picker = customCPBtn.new(line_edit)
+		color_picker.color = query_list[query]
+
+		settings_grid.add_child(color_picker)
 		settings_grid.add_child(line_edit)
 
 
-func add_array_rows_to_grid(array): # TODO add blank labels
+func add_array_rows_to_grid(array, parent):
 	for item in array:
 		var label = Label.new()
 		label.text = " "
@@ -54,14 +66,3 @@ func add_array_rows_to_grid(array): # TODO add blank labels
 		line_edit.add_theme_font_size_override("font_size", 10)
 		line_edit.expand_to_text_length = true
 		settings_grid.add_child(line_edit)
-
-
-func add_branch_color_picker(title, color):
-	var label = Label.new()
-	label.text = title
-	var color_picker = ColorPickerButton.new()
-	color_picker.color = color
-	color_picker.set_name("branch_color_picker")
-	color_picker.connect("color_changed", set_branch_color)
-	settings_grid.add_child(label)
-	settings_grid.add_child(color_picker)

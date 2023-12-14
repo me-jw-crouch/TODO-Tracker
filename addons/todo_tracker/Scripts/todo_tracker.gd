@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 ## The todo plugin examines all files under 'res://' and documents instances of
-## 'TODO' and lists their location, and gives the line in the tooltip on hover.
+## 'TO-DO' and lists their location, and gives the line in the tooltip on hover.
 ##
 ## WIP Features
 ## Clicking on the file should open up the file at the line within preferred
@@ -14,13 +14,14 @@ const _DEFAULT_STR_DICT = {
 	"TODO": Color("YELLOW"),
 	"FIXME": Color("YELLOW"),
 	"WARNING": Color("RED"),
-	"WORKAROUND": Color("WHITE")
+	"WORKAROUND": Color("WHITE"),
+	"QUESTION": Color("WHITE")
 }
 const _DEFAULT_FILETYPES = [".gd", ".txt"]
 const _DEFAULT_IGNORE = ["addons"]
 const _DEFAULT_BRANCH_COLOR = Color("WHITE")
 
-var search_strings_array : Dictionary
+var query_list : Dictionary
 var filetypes_to_search : Array
 var folders_to_ignore : Array
 var branch_color : Color
@@ -54,6 +55,9 @@ func _enter_tree() -> void:
 			"PanelContainer/VSplitContainer/LowerContainer/ResultsTree")
 	results_tree.connect("button_clicked", _edit_file_at_line)
 
+	set_grid = dock.get_node(
+		"PanelContainer/VSplitContainer/LowerContainer/SettingsGrid")
+
 	load_config()
 	_update_tree()
 
@@ -81,7 +85,7 @@ func _on_settings_button_pressed():
 
 func create_config_file() -> void:
 	var config = ConfigFile.new()
-	config.set_value("settings", "search_strings_array", search_strings_array)
+	config.set_value("settings", "query_list", query_list)
 	config.set_value("settings", "filetypes_to_search", filetypes_to_search)
 	config.set_value("settings", "branch_color", branch_color)
 	config.set_value("settings", "folders_to_ignore", folders_to_ignore)
@@ -94,9 +98,9 @@ func create_config_file() -> void:
 func load_config() -> void:
 	var config := ConfigFile.new()
 	if config.load("res://addons/todo_tracker/tt.cfg") == OK:
-		search_strings_array = config.get_value(
+		query_list = config.get_value(
 			"settings",
-			"search_strings_array",
+			"query_list",
 			_DEFAULT_STR_DICT)
 
 		filetypes_to_search = config.get_value(
@@ -118,34 +122,18 @@ func load_config() -> void:
 
 
 func initialize_settings_grid():
-	# Clear grid before re-initializing.
-	#for child in settings_grid.get_children():
-		#child.queue_free()
-#
-	#add_branch_color_picker("Branch", branch_color)
-	#add_array_header("Queries")
-	#add_dict_rows_to_grid(search_strings_array)
-#
-	#add_array_header("File Types")
-	#add_array_rows_to_grid(filetypes_to_search)
-#
-	#add_array_header("Ignore")
-	#add_array_rows_to_grid(folders_to_ignore)
 	pass
+
 
 func add_to_queries():
-	#search_strings_array.append("")
-	#initialize_settings_grid()
 	pass
+
 
 func add_to_file_types():
-	filetypes_to_search.append("")
-	#initialize_settings_grid()
 	pass
 
+
 func add_to_ignore_list():
-	folders_to_ignore.append("")
-	#initialize_settings_grid()
 	pass
 
 
@@ -239,7 +227,7 @@ func _parse_file(path, file_name, parent_tree_item):
 		var line = file.get_line()
 		var line_number = 1
 		while not file.eof_reached():
-			for query in search_strings_array:
+			for query in query_list:
 				if line.find(query) != -1:
 					_create_line_leaf(
 						parent_tree_item,
@@ -258,7 +246,7 @@ func _parse_file(path, file_name, parent_tree_item):
 func _create_line_leaf(parent, line_num, line,
 		file_name, query, file_path) -> TreeItem:
 	var child = results_tree.create_item(parent)
-	child.set_custom_color(0, search_strings_array[query])
+	child.set_custom_color(0, query_list[query])
 	child.set_text(0, str(line_num) + ": " + query)
 	child.set_tooltip_text(0, line)
 	child.set_selectable(0, false)
