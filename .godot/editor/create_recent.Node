@@ -1,8 +1,13 @@
-VSplitContainer
-GridContainer
+Button
+HSplitContainer
+Label
+LineEdit
 HSeparator
-HFlowContainer
+GridContainer
+ColorPickerButton
 PanelContainer
+Control
+VSplitContainer
+HFlowContainer
 VBoxContainer
 Tree
-Button

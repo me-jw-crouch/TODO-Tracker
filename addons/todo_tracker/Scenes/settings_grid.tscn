@@ -1,0 +1,107 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbxgbolt4cl8l"]
+
+[ext_resource type="Script" path="res://addons/todo_tracker/Scripts/settings_grid.gd" id="1_0idrs"]
+
+[node name="SettingsGrid" type="GridContainer"]
+script = ExtResource("1_0idrs")
+
+[node name="BranchColorPickerSplit" type="HSplitContainer" parent="."]
+layout_mode = 2
+
+[node name="BranchColorPickerBtn" type="ColorPickerButton" parent="BranchColorPickerSplit"]
+layout_mode = 2
+text = "     "
+
+[node name="Label" type="Label" parent="BranchColorPickerSplit"]
+layout_mode = 2
+text = "File/Folder Names"
+
+[node name="HSep" type="HSeparator" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="QueryGrid" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 2
+
+[node name="Button" type="Button" parent="QueryGrid"]
+layout_mode = 2
+text = " + "
+
+[node name="Label" type="Label" parent="QueryGrid"]
+layout_mode = 2
+tooltip_text = "Case Sensative, and is simple string equality. These are just comment post-its, if you need something more powerful... edit the code."
+mouse_filter = 1
+text = "Query List"
+
+[node name="NewQueryCPBtn" type="ColorPickerButton" parent="QueryGrid"]
+layout_mode = 2
+text = "     "
+
+[node name="LineEdit" type="LineEdit" parent="QueryGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSep2" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="FileExtGrid" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 2
+
+[node name="Button" type="Button" parent="FileExtGrid"]
+layout_mode = 2
+text = " + "
+
+[node name="Label" type="Label" parent="FileExtGrid"]
+layout_mode = 2
+tooltip_text = "Will only search the file extensions listed, include the period."
+mouse_filter = 1
+text = "File Extensions to Search"
+
+[node name="NewExtensionCPBtn" type="ColorPickerButton" parent="FileExtGrid"]
+layout_mode = 2
+text = "     "
+
+[node name="LineEdit" type="LineEdit" parent="FileExtGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSep3" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="IgnoreGrid" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 2
+
+[node name="Button" type="Button" parent="IgnoreGrid"]
+layout_mode = 2
+text = " + "
+
+[node name="Label" type="Label" parent="IgnoreGrid"]
+layout_mode = 2
+tooltip_text = "Will ignore all folders and files that match perfectly."
+mouse_filter = 1
+text = "Folder Names to Ignore"
+
+[node name="NewIgnoreCPBtn" type="ColorPickerButton" parent="IgnoreGrid"]
+layout_mode = 2
+text = "     "
+
+[node name="LineEdit" type="LineEdit" parent="IgnoreGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSep4" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 2
+
+[node name="ClrBtn" type="Button" parent="HSplitContainer"]
+layout_mode = 2
+text = "Clr"
+
+[node name="SaveBtn" type="Button" parent="HSplitContainer"]
+layout_mode = 2
+text = "Save and Close"

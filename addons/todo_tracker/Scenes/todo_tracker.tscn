@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3 uid="uid://dg5i5nd6fo2o"]
+
+[ext_resource type="Texture2D" uid="uid://bduj0xvxpx06e" path="res://addons/todo_tracker/Assets/icons8-settings-16.svg" id="1_1qqmk"]
+[ext_resource type="PackedScene" uid="uid://bbxgbolt4cl8l" path="res://addons/todo_tracker/Scenes/settings_grid.tscn" id="2_v0j6b"]
+
+[node name="TODO" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.997
+anchor_bottom = 1.0
+offset_right = 3.45593
+
+[node name="VSplitContainer" type="VSplitContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="SearchBtn" type="Button" parent="PanelContainer/VSplitContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Run TODO"
+
+[node name="SettingsBtn" type="Button" parent="PanelContainer/VSplitContainer/HSplitContainer"]
+layout_mode = 2
+icon = ExtResource("1_1qqmk")
+
+[node name="LowerContainer" type="PanelContainer" parent="PanelContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="ResultsTree" type="Tree" parent="PanelContainer/VSplitContainer/LowerContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+columns = 2
+column_titles_visible = true
+
+[node name="SettingsGrid" parent="PanelContainer/VSplitContainer/LowerContainer" instance=ExtResource("2_v0j6b")]
+visible = false
+layout_mode = 2

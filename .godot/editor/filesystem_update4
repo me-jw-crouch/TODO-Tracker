@@ -1,6 +1,6 @@
-res://todo.tscn
-res://todo.gd
-res://addons/my_custom_node/todo.tscn
-res://addons/my_custom_node/custom_node.gd
-res://addons/my_custom_node/testing_plugin_EditorScript.gd
-res://todo2.gd
+res://addons/todo_tracker/Scenes/todo_tracker.tscn
+res://addons/todo_tracker/Scripts/todo_tracker.gd
+res://addons/todo_tracker/Scenes/settings_grid.tscn
+res://addons/todo_tracker/Scripts/settings_grid.gd
+res://addons/todo_tracker/backup_tt.cfg
+res://addons/todo_tracker/tt.cfg

@@ -1,10 +1,26 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1702366156
+::res://::1702521668
 icon.svg::CompressedTexture2D::8580144648387628082::1702326787::1702326797::1::::<><>::
-old_script.gd::GDScript::-1::1702351643::0::1::::<>RefCounted<>::
-test_file.gd::GDScript::-1::1702343735::0::1::::<>RefCounted<>::
-todo.gd::GDScript::-1::1702365999::0::1::::<>Node<>::
-todo.tscn::PackedScene::6743896156541152325::1702366004::0::1::::<><>::res://todo.gd
-::res://FolderA/::1702366144
-::res://FolderA/subFolderA/::1702366144
-::res://FolderB/::1702366134
+README.md::TextFile::-1::1702388710::0::1::::<><>::
+test_file_1.gd::GDScript::-1::1702519257::0::1::::<>Node<>::
+test_file_2.gd::GDScript::-1::1702492858::0::1::::<>Node<>::
+::res://addons/::1702448413
+::res://addons/todo_tracker/::1702521645
+backup_tt.cfg::TextFile::-1::1702518590::0::1::::<><>::
+plugin.cfg::TextFile::-1::1702501690::0::1::::<><>::
+tt.cfg::TextFile::-1::1702521645::0::1::::<><>::
+::res://addons/todo_tracker/Assets/::1702501420
+icons8-edit.svg::CompressedTexture2D::5144254414681164925::1702483570::1702501400::1::::<><>::
+icons8-settings-16.svg::CompressedTexture2D::2638867109014854094::1702482125::1702501400::1::::<><>::
+::res://addons/todo_tracker/Scenes/::1702521597
+todo_tracker.tscn::PackedScene::224790189533596948::1702521597::0::1::::<><>::uid://bduj0xvxpx06e::::res://addons/todo_tracker/Assets/icons8-settings-16.svg
+::res://addons/todo_tracker/Scripts/::1702520557
+todo_tracker.gd::GDScript::-1::1702520557::0::1::::<>EditorPlugin<>::
+::res://branch with spaces/::1702493053
+::res://empty_folder_shouldnt_show/::1702492930
+::res://test_branch_with_nest/::1702500092
+bird_on_the_branch.gd::GDScript::-1::1702500092::0::1::::<>Node<>::
+::res://test_branch_with_nest/nested_folder/::1702500080
+egg_in_the_nest.gd::GDScript::-1::1702500080::0::1::::<>Node<>::
+::res://test_folder_1/::1702492909
+file with spaces.gd::GDScript::-1::1702492906::0::1::::<>Node<>::
