@@ -12,37 +12,37 @@ offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="PC" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.997
 anchor_bottom = 1.0
 offset_right = 3.45593
 
-[node name="VSplitContainer" type="VSplitContainer" parent="PanelContainer"]
+[node name="VSC" type="VSplitContainer" parent="PC"]
 layout_mode = 2
 
-[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer/VSplitContainer"]
+[node name="TopButtons" type="HSplitContainer" parent="PC/VSC"]
 layout_mode = 2
 
-[node name="SearchBtn" type="Button" parent="PanelContainer/VSplitContainer/HSplitContainer"]
+[node name="SearchBtn" type="Button" parent="PC/VSC/TopButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Run TODO"
 
-[node name="SettingsBtn" type="Button" parent="PanelContainer/VSplitContainer/HSplitContainer"]
+[node name="SettingsBtn" type="Button" parent="PC/VSC/TopButtons"]
 layout_mode = 2
 icon = ExtResource("1_1qqmk")
 
-[node name="LowerContainer" type="PanelContainer" parent="PanelContainer/VSplitContainer"]
+[node name="LowerContainer" type="PanelContainer" parent="PC/VSC"]
 layout_mode = 2
 
-[node name="ResultsTree" type="Tree" parent="PanelContainer/VSplitContainer/LowerContainer"]
+[node name="ResultsTree" type="Tree" parent="PC/VSC/LowerContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 columns = 2
 column_titles_visible = true
 
-[node name="SettingsGrid" parent="PanelContainer/VSplitContainer/LowerContainer" instance=ExtResource("2_v0j6b")]
+[node name="SettingsGrid" parent="PC/VSC/LowerContainer" instance=ExtResource("2_v0j6b")]
 visible = false
 layout_mode = 2

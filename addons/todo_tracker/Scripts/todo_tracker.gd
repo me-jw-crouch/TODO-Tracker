@@ -12,7 +12,7 @@ enum DIR_TYPE { FOLDER, FILE }
 
 const _DEFAULT_STR_DICT = {
 	"TODO": Color("YELLOW"),
-	"FIXME": Color("YELLOW"),
+	# "FIXME": Color("YELLOW"),
 	"WARNING": Color("RED"),
 	"WORKAROUND": Color("WHITE"),
 	"QUESTION": Color("WHITE")
@@ -32,32 +32,36 @@ var results_tree : Tree
 var tree_root : TreeItem
 var dock : Node
 var edit_btn_svg : Texture2D
-var show_settings := false
-
+var query_le : LineEdit
+var query_cpb : ColorPickerButton
+var file_ext_le : LineEdit
+var ignore_le : LineEdit
+var branch_cpb : ColorPickerButton
+var add_query_btn : Button
+var add_ext_btn : Button
+var ignore_btn : Button
+var query_grid : GridContainer
+var ext_grid : GridContainer
+var ignore_grid : GridContainer
+var CustomCPBtn : Script
+var save_btn : Button
 
 func _enter_tree() -> void:
-	dock = preload(
-			"res://addons/todo_tracker/Scenes/todo_tracker.tscn").instantiate()
-
-	edit_btn_svg = preload(
-			"res://addons/todo_tracker/Assets/icons8-edit.svg")
+	dock = preload("res://addons/todo_tracker/Scenes/todo_tracker.tscn").instantiate()
+	CustomCPBtn = preload("res://addons/todo_tracker/Scripts/custom_color_picker.gd")
+	edit_btn_svg = preload("res://addons/todo_tracker/Assets/icons8-edit.svg")
 	add_control_to_dock(DOCK_SLOT_RIGHT_UL, dock)
 
-	search_button = dock.get_node(
-			"PanelContainer/VSplitContainer/HSplitContainer/SearchBtn")
+	search_button = dock.get_node("PC/VSC/TopButtons/SearchBtn")
+	settings_button = dock.get_node("PC/VSC/TopButtons/SettingsBtn")
 	search_button.connect("pressed", _on_search_button_pressed)
-
-	settings_button = dock.get_node(
-			"PanelContainer/VSplitContainer/HSplitContainer/SettingsBtn")
 	settings_button.connect("pressed", _on_settings_button_pressed)
 
-	results_tree = dock.get_node(
-			"PanelContainer/VSplitContainer/LowerContainer/ResultsTree")
+	results_tree = dock.get_node("PC/VSC/LowerContainer/ResultsTree")
 	results_tree.connect("button_clicked", _edit_file_at_line)
 
-	set_grid = dock.get_node(
-		"PanelContainer/VSplitContainer/LowerContainer/SettingsGrid")
 
+func _ready() -> void:
 	load_config()
 	_update_tree()
 
@@ -74,12 +78,12 @@ func _on_search_button_pressed():
 
 
 func _on_settings_button_pressed():
-	if not set_grid.visible:
-		initialize_settings_grid()
+	if results_tree.visible:
+		update_settings_grid()
 	else:
+		set_grid.queue_free()
 		_update_tree()
 
-	set_grid.visible = not set_grid.visible
 	results_tree.visible = not results_tree.visible
 
 
@@ -121,20 +125,66 @@ func load_config() -> void:
 		create_config_file()
 
 
-func initialize_settings_grid():
-	pass
+func update_settings_grid():
+	set_grid = preload("res://addons/todo_tracker/Scenes/settings_grid.tscn").instantiate()
+	dock.get_node("PC/VSC/LowerContainer").add_child(set_grid)
+	branch_cpb = set_grid.get_node("BranchCPSplit/BranchColorPickerBtn")
+	branch_cpb.color = branch_color
 
+	query_grid = set_grid.get_node("QueryGrid")
+	query_cpb = query_grid.get_node("HSplitContainer/NewQueryCPBtn")
+	add_query_btn = query_grid.get_node("HSplitContainer/NewQueryBtn")
+	query_le = query_grid.get_node("NewQueryLE")
+
+	ext_grid = set_grid.get_node("FileExtGrid")
+	file_ext_le = ext_grid.get_node("NewFileExtLE")
+	add_ext_btn = ext_grid.get_node("NewFileExtBtn")
+
+	ignore_grid = set_grid.get_node("IgnoreGrid")
+	ignore_le = ignore_grid.get_node("NewIgnoreLE")
+	ignore_btn = ignore_grid.get_node("NewIgnoreBtn")
+
+	save_btn = set_grid.get_node("SaveBtn")
+
+	if not branch_cpb.is_connected("pressed", set_branch_color):
+		branch_cpb.connect("color_changed", set_branch_color)
+		add_query_btn.connect("pressed", add_to_queries)
+		add_ext_btn.connect("pressed", add_to_file_types)
+		ignore_btn.connect("pressed", add_to_ignore_list)
+
+	for query in query_list:
+		var le = LineEdit.new()
+		le.text = query
+		var cpb = CustomColorPickerBtn.new()
+		cpb.setup(le, query_list[query])
+		query_grid.add_child(cpb)
+		query_grid.add_child(le)
+
+	for item in filetypes_to_search:
+		var lbl = Label.new()
+		var le = LineEdit.new()
+		le.text = item
+		ext_grid.add_child(lbl)
+		ext_grid.add_child(le)
+
+	for item in folders_to_ignore:
+		var lbl = Label.new()
+		var le = LineEdit.new()
+		le.text = item
+		ignore_grid.add_child(lbl)
+		ignore_grid.add_child(le)
 
 func add_to_queries():
-	pass
+	query_list[query_le.text] = query_cpb.color
+
 
 
 func add_to_file_types():
-	pass
+	filetypes_to_search.append(file_ext_le.text)
 
 
 func add_to_ignore_list():
-	pass
+	folders_to_ignore.append(ignore_le.text)
 
 
 func set_branch_color(color):
@@ -208,15 +258,13 @@ func _process_directory_contents(dir_dict, parent = null):
 		var new_branch_parent = _build_branch(parent, key)
 		if dir_dict[&"contents"][key][&"type"] == DIR_TYPE.FILE:
 			_parse_file(dir_dict[&"path"], key, new_branch_parent)
-			if new_branch_parent.get_child_count() == 0:
-				new_branch_parent.free()
 		elif dir_dict[&"contents"][key][&"type"] == DIR_TYPE.FOLDER:
 			_process_directory_contents(
 				dir_dict[&"contents"][key],
 				new_branch_parent
 				)
-			if new_branch_parent.get_child_count() == 0:
-				new_branch_parent.free()
+		if new_branch_parent.get_child_count() == 0:
+			new_branch_parent.free()
 
 
 ## Parses a file line by line and finds intances of all queries' patterns.
@@ -262,7 +310,7 @@ func _create_line_leaf(parent, line_num, line,
 func _build_branch(parent, folder_name) -> TreeItem:
 	var new_branch_parent = results_tree.create_item(parent)
 	new_branch_parent.set_text(0, folder_name)
-	# new_branch_parent.set_tooltip_text(0, "test")
 	new_branch_parent.set_selectable(0, false)
 	new_branch_parent.set_custom_color(0, branch_color)
+
 	return new_branch_parent

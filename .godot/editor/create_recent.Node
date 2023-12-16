@@ -1,10 +1,11 @@
-ColorPickerButton
-Button
 HSplitContainer
 Label
+Node
+GridContainer
+ColorPickerButton
+Button
 LineEdit
 HSeparator
-GridContainer
 PanelContainer
 Control
 VSplitContainer
